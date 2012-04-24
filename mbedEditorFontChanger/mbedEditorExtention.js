@@ -55,8 +55,6 @@ EditorBoard = function() {
 	this.charOfAroundCursor = [this.lineText.charAt(this.col - 2), this.lineText.charAt(this.col - 1)];
 	this.targetChar = "";
 
-	this.homu = function(){alert("homuhomu!");};
-
 	// returns target possition
 	this.getTargetPos = function(){
 		var i, j, offset, count;
