@@ -1,0 +1,53 @@
+<html><script>
+var fontName, fontSize, mark_, tabId;
+
+chrome.extension.onRequest.addListener(
+	function(request, sender, sendResponse) {
+		if(request.text === "init") {
+			tabId = sender.tab.id;
+			fontName = localStorage["font_name"];
+			if(!fontName) fontName = "Courier New";
+			fontSize = localStorage["font_size"];
+			if(!fontSize) fontSize = "13px";
+			mark_ = localStorage["mark"];
+			if(!mark_ === undefined) mark_ = false;
+			chrome.pageAction.show(tabId);
+			sendResponse(
+				{
+					font:fontName,
+					size:fontSize,
+					mark:mark_
+				}
+			);
+		} else if(request.text === "getFontinfo") {
+			fontName = localStorage["font_name"];
+			if(!fontName) fontName = "Courier New";
+			fontSize = localStorage["font_size"];
+			if(!fontSize) fontSize = "13px";
+			mark_ = localStorage["mark"];
+			if(!mark_ === undefined) mark_ = false;
+			sendResponse(
+				{
+					font:fontName,
+					size:fontSize,
+					mark:mark_
+				}
+			);
+		} else if(request.text === "setFontinfo") {
+			localStorage["font_name"] = request.font;
+			localStorage["font_size"] = request.size;
+			localStorage["mark"] = request.mark;
+			chrome.tabs.sendRequest(
+				tabId,
+				{
+					text: "reload",
+					font: request.font,
+					size: request.size,
+					mark: request.mark
+				},
+				function(response) {}
+			);
+		} else sendResponse({});
+	}
+);
+</script></html>

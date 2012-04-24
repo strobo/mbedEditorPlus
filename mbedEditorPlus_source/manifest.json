@@ -1,0 +1,22 @@
+{
+	"name": "mbedEditor++",
+	"version": "0.6.1",
+	"description": "Change font and highlights matching brackets in mbed editor.",
+	"icons": {"48" : "icons/icon48.png",
+				"128": "icons/icon128.png" },
+	"background_page": "background.html",
+	"page_action": {
+		"default_icon": "icons/icon16.png",
+		"default_title": "mbedEditor++",
+		"popup": "popup.html"
+	},
+	"content_scripts":
+	[
+		{
+			"matches": ["https://mbed.org/compiler/"],
+			"js" : ["mbedEditorExtention.js"]
+		}
+	],
+	"update_url": "https://github.com/strobo/mbedEditorPlus/raw/master/updates.xml",
+	"permissions": ["https://mbed.org/compiler/"]
+}
