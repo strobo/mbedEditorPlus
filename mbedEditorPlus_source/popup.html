@@ -8,7 +8,8 @@ function init() {
 	var mark_text = document.getElementById('mark_text');
 	var mark_box = document.getElementById('mark_box');
 	var save_button = document.getElementById('save');
-	
+
+    
 	chrome.extension.sendRequest
 	(
 		{
@@ -20,6 +21,9 @@ function init() {
 			fontSize.innerText = res.size;
 			if(res.mark === "true") mark_box.checked = true;
 			if(res.mark === "false") mark_box.checked = false;
+            var msg = (window.navigator.language === "ja") ? "対応する括弧を強調表示する": "Highlight matching brackets";
+            console.log(msg);
+            mark_text.innerText = msg;
 		}
 	);
 	fontName.addEventListener('click', function()
@@ -107,7 +111,7 @@ input#save {
 <ul>
 <li>Font: <span id="font_name"></span><input type="hidden"class="textbox"id="font_name_input"></li>
 <li>Size: <span id="font_size"></span><input type="hidden"class="textbox"id="font_size_input"></li>
-<li><span id="mark_text">括弧を強調表示</span><input type="checkbox" id="mark_box">
+<li><input type="checkbox" id="mark_box"><span id="mark_text"></span>
 </ul>
 <input type="button"value="Save"id="save">
 </div>
