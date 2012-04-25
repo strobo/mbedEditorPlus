@@ -58,7 +58,7 @@ EditorBoard = function() {
 	// returns target possition
 	this.getTargetPos = function(){
 		var i, j, offset, count;
-		var PAREN = ['[' , ']' ,'(' , ')' , '{' , '}'];				// [] () {}
+		var PAREN = ['[' , ']' ,'(' , ')' , '{' , '}'];
 		var target = {};
 		offset = count = 0;
 
@@ -111,50 +111,98 @@ EditorBoard = function() {
 			}
 		}
 	}
+    
 	this.getLineHTML = function(line) {
 		return this.editorText.childNodes[line].innerHTML;
 	}
+    
 	this.setLineHTML = function(line, html) {
 		this.editorText.childNodes[line].innerHTML = html;
 	}
+    
 	this.getText = function(line, col) {
 		return this.editorText.childNodes[line].innerText.charAt(col);
 	}
+
 	this.getHTML = function(line, col) {
 		return this.editorText.childNodes[line].innerHTML.charAt(col);
 	}
+
+    this.getCurrentBracket = function() {
+		var PAREN = ['[' , ']' ,'(' , ')' , '{' , '}'];
+		var finishGetTargetText = false;
+        
+		for(var i = 1; (i >= 0) && (!finishGetTargetText); i--) {
+			for(var j = 0; (j < PAREN.length) && (!finishGetTargetText); j++) {
+				if(this.charOfAroundCursor[i] === PAREN[j]) {
+					if(j%2 === 0) {								// [ ( {
+						this.targetChar = PAREN[j+1];
+						finishGetTargetText = true;
+                        return {line:this.lineOfDom, col:this.col+(-i), bracket:PAREN[j]};
+					} else {									// ] ) }
+						this.targetChar = PAREN[j-1];
+						finishGetTargetText = true;
+                        return {line:this.lineOfDom, col:this.col+(-i), bracket:PAREN[j]};
+					}
+				}
+			}
+		}
+        return 0;
+    }
+
+    this.markChar = function(line, col, targetChar) {
+        var resultHTML;
+        var lineText = this.getLineHTML(line);
+        
+        resultHTML = lineText.slice(0, col-1);
+        resultHTML += "<span class='_marked'style='background-color:#af0'>" + targetChar + "</span>";
+        resultHTML += lineText.slice(col, lineText.length);
+        this.setLineHTML(line, resultHTML);
+    }
+
+    this.convertCol = function(line, col, targetChar) {
+        var count = 0;
+
+        do {
+            if(this.getText(line, col) === targetChar) count++;
+        } while(col--);
+        col = 0;
+        do {
+            if(this.getHTML(line, col++) === targetChar) count--;
+        } while(count != 0);
+        return col;
+    }
 }
 
+/* main function of highlighting */
 function mark(){
-	var count, col;
+	var col;
 	var editorArea = {};
 	var targetPosition = {};
-	var resultHTML;
-
-	count = col = 0;
-	var marked = document.getElementById('_marked');
-	if(marked) marked.outerHTML = marked.innerHTML;
+	var marked = document.getElementsByClassName('_marked');
+    
+    /* unmark previous marked bracket */
+    var i = marked.length;
+    while(i){
+        marked[i-1].outerHTML = marked[i-1].innerHTML;
+        i--;
+    }
+    
 	if(!mark_flag) return 0;
+    
 	editorArea = new EditorBoard();
-
+    
+    /* mark current bracket */
+    currentPosition  = editorArea.getCurrentBracket();
+    if(!currentPosition) return 0;
+    col = editorArea.convertCol(currentPosition.line,currentPosition.col, currentPosition.bracket);
+    editorArea.markChar(currentPosition.line, col, currentPosition.bracket);
+    
+    /* mark matched bracket */
 	targetPosition = editorArea.getTargetPos();
 	if(!targetPosition) return 0;
-
-	col = targetPosition.col;
-	do {
-		if(editorArea.getText(targetPosition.line, col) === editorArea.targetChar) count++;
-	} while(col--);
-	col = 0;
-	do {
-		if(editorArea.getHTML(targetPosition.line, col++) === editorArea.targetChar) count--;
-	} while(count != 0);
-
-	var lineText = editorArea.getLineHTML(targetPosition.line);
-	resultHTML = lineText.slice(0, col-1);
-	resultHTML += "<span id='_marked'style='background-color:#af0'>" + editorArea.targetChar + "</span>";
-	resultHTML += lineText.slice(col, lineText.length);
-
-	editorArea.setLineHTML(targetPosition.line, resultHTML);
+    col = editorArea.convertCol(targetPosition.line,targetPosition.col, editorArea.targetChar);
+    editorArea.markChar(targetPosition.line, col, editorArea.targetChar);
 }
 
 document.head.addEventListener('DOMNodeInserted',function() {
