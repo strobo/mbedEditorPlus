@@ -1,38 +1,41 @@
  /* mbedEditor++         */
  /* created by @_strobo  */
  
- var mark_flag;
- var StyleElement = {
-	 text      : "",
-	 tag       : "",
-	 element   : document.createElement('style'),
-	 modifyTag : function() {
-		 this.tag.innerText = this.text;
-	 },
-	 appendTag : function() {
-		 this.element.innerText = this.text;
-		 this.tag = document.head.appendChild( this.element );
-	 },
-	 setStyleText : function(font, size) {
-		this.text =  ".editor_cursor, .editor_line, .editor_line_test, .editor_number{font-family:'" + font + "',Courier,monospace;font-size:" + size + "};";
-	 }
- };
+var mark_flag,
+    mark_color;
+var StyleElement = {
+    text      : "",
+    tag       : "",
+    element   : document.createElement('style'),
+    modifyTag : function() {
+        this.tag.innerText = this.text;
+    },
+    appendTag : function() {
+        this.element.innerText = this.text;
+        this.tag = document.head.appendChild( this.element );
+    },
+    setStyleText : function(font, size) {
+        this.text =  ".editor_cursor, .editor_line, .editor_line_test, .editor_number{font-family:'" + font + "',Courier,monospace;font-size:" + size + "};";
+    }
+};
 
 // initialize
 chrome.extension.sendRequest(
-	{ text :"init" },
+	{ req :"init" },
 	function(res) {
 		StyleElement.setStyleText(res.font, res.size);
 		mark_flag = res.mark;
+        mark_color = res.color;
 	}
 );
 // reload font
 chrome.extension.onRequest.addListener(
 	function(request, sender, sendResponse) {
-		if (request.text === "reload") {	
+		if (request.req === "reload") {	
 			StyleElement.setStyleText(request.font, request.size);
 			StyleElement.modifyTag();
 			mark_flag = request.mark;
+            mark_color = request.color;
 			sendResponse({});
 		}
 		else sendResponse({});
@@ -150,12 +153,12 @@ EditorBoard = function() {
         return 0;
     }
 
-    this.markChar = function(line, col, targetChar) {
+    this.markChar = function(line, col, targetChar, color) {
         var resultHTML;
         var lineText = this.getLineHTML(line);
         
         resultHTML = lineText.slice(0, col-1);
-        resultHTML += "<span class='_marked'style='background-color:#af0'>" + targetChar + "</span>";
+        resultHTML += "<span class='_marked'style='background-color:"+ mark_color + "'>" + targetChar + "</span>";
         resultHTML += lineText.slice(col, lineText.length);
         this.setLineHTML(line, resultHTML);
     }

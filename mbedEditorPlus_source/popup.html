@@ -1,26 +1,31 @@
 <html><head>
 <script>
 function init() {
-	var fontName = document.getElementById('font_name');
-	var fontNameInput = document.getElementById('font_name_input');
-	var fontSize = document.getElementById('font_size');
-	var fontSizeInput = document.getElementById('font_size_input');
-	var mark_text = document.getElementById('mark_text');
-	var mark_box = document.getElementById('mark_box');
-	var save_button = document.getElementById('save');
+	var fontName = document.getElementById('font_name'),
+        fontNameInput = document.getElementById('font_name_input'),
+        fontSize = document.getElementById('font_size'),
+        fontSizeInput = document.getElementById('font_size_input'),
+        color = document.getElementById('color'),
+        colorInput = document.getElementById('color_input'),
+        colorSample = document.getElementById('color_sample'),
+        mark_text = document.getElementById('mark_text'),
+        mark_box = document.getElementById('mark_box'),
+        save_button = document.getElementById('save');
+
     
 	chrome.extension.sendRequest
 	(
 		{
-			text:"getFontinfo"
+			req:"getInfo"
 		},
 		function(res)
 		{
 			fontName.innerText = res.font;
 			fontSize.innerText = res.size;
-			if(res.mark === "true") mark_box.checked = true;
-			if(res.mark === "false") mark_box.checked = false;
-            var msg = (window.navigator.language === "ja") ? "対応する括弧を強調表示": "Highlight matching brackets";
+            color.innerText = res.color;
+            colorSample.style.backgroundColor = res.color;
+            mark_box.checked = (res.mark === "true") ? true : false;
+            var msg = (window.navigator.language === "ja") ? "対応する括弧を強調表示": "Highlights matching brackets";
             mark_text.innerText = msg;
 		}
 	);
@@ -52,55 +57,80 @@ function init() {
 			
 		}, false);
 	}, false);
+
+    color.addEventListener('click', function()
+	{
+		color.style.display = "none";
+		colorInput.type = "text";
+		colorInput.focus();
+		colorInput.value = color.innerText;
+		
+		colorInput.addEventListener('blur', function(){
+            colorSample.style.backgroundColor = colorInput.value;
+			color.innerText = colorInput.value;
+			colorInput.type = "hidden";
+			color.style.display = "inline";
+		}, false);
+        
+		colorInput.addEventListener('keyup', function(){
+            colorSample.style.backgroundColor = colorInput.value;
+        }, false);
+	}, false);
+
 	save_button.addEventListener('click', function()
 	{
 		chrome.extension.sendRequest(
 		{
-			text: "setFontinfo",
+			req: "setInfo",
 			font: fontName.innerText,
 			size: fontSize.innerText,
+            color: color.innerText,
 			mark: mark_box.checked
 		});
 	});
-	function check()
-	{
-		if(mark_box.checked === true) {
-			mark_box.checked = false;
-		}else{
-			mark_box.checked = true;
-		}
-	}
-	mark_text.addEventListener('click', check, false);
 }
 window.addEventListener('load', init, false);
 </script>
 <style>
 body {
-width:200px;
-font-family: sans-serif;
-font-size: 90%;
-color: #444;
+    width:220px;
+    font-family: sans-serif;
+    font-size: 90%;
+    color: #444;
 }
 a, a:visited {
-  color: #333;
+    color: #333;
 }
 .h {
-font-weight: bold;
+    font-weight: bold;
 }
 ul {
-  padding: 4px 4px 4px 4px;
-  margin: 2px 2px 2px 2px;
-  list-style: none;
+    padding: 4px 4px 4px 4px;
+    margin: 2px 2px 2px 2px;
+    list-style: none;
 }
 li {
- margin: 0 0 0 0;
+    margin: 0 0 0 0;
 }
-#font_name_input, #font_size_input{
- width:140px;
- margin:0px;
+#font_name_input, #font_size_input {
+    width:140px;
+    margin:0px;
+}
+#color_input {
+    width: 70px;
+    margin:0px;
+}
+#color_sample {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #aaa;
+    margin-right: 5px;
 }
 input#save {
- width:200px;
+    width:220px;
 }
 </style>
 </head><body>
@@ -109,7 +139,8 @@ input#save {
 <ul>
 <li>Font: <span id="font_name"></span><input type="hidden"class="textbox"id="font_name_input"></li>
 <li>Size: <span id="font_size"></span><input type="hidden"class="textbox"id="font_size_input"></li>
-<li><input type="checkbox" id="mark_box"><span id="mark_text"></span>
+<li>Color to hilights: <span id="color_sample"></span><span id="color"></span><input type="hidden"class="textbox"id="color_input"></li>
+<li><input type="checkbox" id="mark_box"><label for="mark_box" id="mark_text"></label></li>
 </ul>
 <input type="button"value="Save"id="save">
 </div>
