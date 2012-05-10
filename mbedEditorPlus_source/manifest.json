@@ -1,6 +1,6 @@
 {
 	"name": "mbedEditor++",
-	"version": "0.6.4",
+	"version": "0.6.5",
 	"description": "Change font and highlights matching brackets in mbed editor.",
 	"icons": {"48" : "icons/icon48.png",
 				"128": "icons/icon128.png" },

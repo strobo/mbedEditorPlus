@@ -153,7 +153,7 @@ EditorBoard = function() {
         return 0;
     }
 
-    this.markChar = function(line, col, targetChar, color) {
+    this.markChar = function(line, col, targetChar) {
         var resultHTML;
         var lineText = this.getLineHTML(line);
         
