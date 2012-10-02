@@ -44,8 +44,8 @@ chrome.extension.onRequest.addListener(
 
 
 EditorBoard = function() {
-	this.line = parseInt(document.getElementById('sb_line').value.split(' ')[1]);	// line
-	this.col = parseInt(document.getElementById('sb_col').value.split(' ')[1]);		// col
+	this.line = parseInt(document.getElementById('ed_line').innerHTML.split(' ')[1]);	// line
+	this.col = parseInt(document.getElementById('ed_col').innerHTML.split(' ')[1]);		// col
 	
 	var lineArea = document.getElementById('aboutedit_ln');
 	this.lineCount = document.getElementById('aboutedit_ln').childElementCount;		// Line
@@ -53,7 +53,7 @@ EditorBoard = function() {
 		if(parseInt(lineArea.childNodes[i].innerText) === this.line) break;
 	}
 	this.lineOfDom = i;																// Cursor Position on DOM
-	this.editorText = document.getElementById('aboutedit_text');					// Displayed editor text 
+	this.editorText = document.getElementById('aboutedit_screen');					// Displayed editor text 
 	this.lineText = this.editorText.childNodes[i].innerText;						// Text of selected line
 	this.charOfAroundCursor = [this.lineText.charAt(this.col - 2), this.lineText.charAt(this.col - 1)];
 	this.targetChar = "";
@@ -211,7 +211,7 @@ function mark(){
 document.head.addEventListener('DOMNodeInserted',function() {
     if(document.head.childElementCount === 13){
 		StyleElement.appendTag();
-		var aboutedit = document.getElementById('aboutedit');
+		var aboutedit = document.getElementById('aboutedit_plotter');
 		aboutedit.addEventListener('mousedown', mark, false);
 		document.body.addEventListener('keyup', mark, false);
 		document.head.removeEventListener('DOMNodeInserted', arguments.callee, false);
