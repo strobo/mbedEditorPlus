@@ -1,4 +1,3 @@
-<html><script>
 var fontName, fontSize, markColor, mark_, tabId;
 
 chrome.extension.onRequest.addListener(
@@ -44,18 +43,19 @@ chrome.extension.onRequest.addListener(
 			localStorage["font_size"] = request.size;
             localStorage["mark_color"] = request.color;
 			localStorage["mark"] = request.mark;
-			chrome.tabs.sendRequest(
-				tabId,
-				{
-					req: "reload",
-					font: request.font,
-					size: request.size,
-                    color: request.color,
-					mark: request.mark
-				},
-				function(response) {}
-			);
+			chrome.tabs.getSelected(null, function(tab) {
+				chrome.tabs.sendMessage(
+					tab.id,
+					{
+						req: "reload",
+						font: request.font,
+						size: request.size,
+						color: request.color,
+						mark: request.mark
+					},
+					function(response) {}
+				)
+			} );
 		} else sendResponse({});
 	}
 );
-</script></html>

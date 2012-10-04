@@ -29,7 +29,7 @@ chrome.extension.sendRequest(
 	}
 );
 // reload font
-chrome.extension.onRequest.addListener(
+chrome.extension.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		if (request.req === "reload") {	
 			StyleElement.setStyleText(request.font, request.size);
@@ -41,7 +41,6 @@ chrome.extension.onRequest.addListener(
 		else sendResponse({});
 	}
 );
-
 
 EditorBoard = function() {
 	this.line = parseInt(document.getElementById('ed_line').innerHTML.split(' ')[1]);	// line
