@@ -21,7 +21,6 @@
 			"js" : ["mbedEditorExtention.js"]
 		}
 	],
-	"update_url": "https://github.com/strobo/mbedEditorPlus/raw/master/updates.xml",
 	"permissions": ["https://mbed.org/compiler/", "tabs"],
 	"content_security_policy":  "default-src 'self'; style-src 'self'; script-src 'self';"
 }
