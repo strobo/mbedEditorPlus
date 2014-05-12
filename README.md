@@ -11,4 +11,4 @@ also this extension highlights matching brackets in mbed editor.
 
 Install
 -------
-[Click here to install mbedEditor++](http://bit.ly/mbedplus)
+[Click here to install mbedEditor++](https://chrome.google.com/webstore/detail/mbededitor%2B%2B/liljebdcddbhpligfnecaflbflifhkma)
