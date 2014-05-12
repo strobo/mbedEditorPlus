@@ -20,7 +20,7 @@ var StyleElement = {
 };
 
 // initialize
-chrome.extension.sendRequest(
+chrome.runtime.sendMessage(
 	{ req :"init" },
 	function(res) {
 		StyleElement.setStyleText(res.font, res.size);
@@ -29,7 +29,7 @@ chrome.extension.sendRequest(
 	}
 );
 // reload font
-chrome.extension.onMessage.addListener(
+chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		if (request.req === "reload") {	
 			StyleElement.setStyleText(request.font, request.size);
@@ -208,7 +208,7 @@ function mark(){
 }
 
 document.head.addEventListener('DOMNodeInserted',function() {
-    if(document.head.childElementCount === 13){
+    if(document.head.childElementCount === 11){
 		StyleElement.appendTag();
 		var aboutedit = document.getElementById('aboutedit_plotter');
 		aboutedit.addEventListener('mousedown', mark, false);

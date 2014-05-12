@@ -1,6 +1,6 @@
 var fontName, fontSize, markColor, mark_, tabId;
 
-chrome.extension.onRequest.addListener(
+chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		if(request.req === "init") {
 			tabId = sender.tab.id;

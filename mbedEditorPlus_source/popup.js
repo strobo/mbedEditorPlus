@@ -11,8 +11,8 @@ function init() {
         mark_box = document.getElementById('mark_box'),
         save_button = document.getElementById('save');
 
-    
-	chrome.extension.sendRequest
+
+	chrome.runtime.sendMessage
 	(
 		{
 			req:"getInfo"
@@ -70,7 +70,7 @@ function init() {
 			colorInput.type = "hidden";
 			color.style.display = "inline";
 		}, false);
-        
+
 		colorInput.addEventListener('keyup', function(){
             colorSample.style.backgroundColor = colorInput.value;
         }, false);
@@ -78,7 +78,7 @@ function init() {
 
 	save_button.addEventListener('click', function()
 	{
-		chrome.extension.sendRequest(
+		chrome.runtime.sendMessage(
 		{
 			req: "setInfo",
 			font: fontName.innerText,
