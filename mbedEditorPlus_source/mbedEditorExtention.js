@@ -1,6 +1,6 @@
  /* mbedEditor++         */
  /* created by @_strobo  */
- 
+
 var mark_flag,
     mark_color;
 var StyleElement = {
@@ -31,7 +31,7 @@ chrome.runtime.sendMessage(
 // reload font
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
-		if (request.req === "reload") {	
+		if (request.req === "reload") {
 			StyleElement.setStyleText(request.font, request.size);
 			StyleElement.modifyTag();
 			mark_flag = request.mark;
@@ -113,15 +113,15 @@ EditorBoard = function() {
 			}
 		}
 	}
-    
+
 	this.getLineHTML = function(line) {
 		return this.editorText.childNodes[line].innerHTML;
 	}
-    
+
 	this.setLineHTML = function(line, html) {
 		this.editorText.childNodes[line].innerHTML = html;
 	}
-    
+
 	this.getText = function(line, col) {
 		return this.editorText.childNodes[line].innerText.charAt(col);
 	}
@@ -133,7 +133,7 @@ EditorBoard = function() {
     this.getCurrentBracket = function() {
 		var PAREN = ['[' , ']' ,'(' , ')' , '{' , '}'];
 		var finishGetTargetText = false;
-        
+
 		for(var i = 1; (i >= 0) && (!finishGetTargetText); i--) {
 			for(var j = 0; (j < PAREN.length) && (!finishGetTargetText); j++) {
 				if(this.charOfAroundCursor[i] === PAREN[j]) {
@@ -155,7 +155,7 @@ EditorBoard = function() {
     this.markChar = function(line, col, targetChar) {
         var resultHTML;
         var lineText = this.getLineHTML(line);
-        
+
         resultHTML = lineText.slice(0, col-1);
         resultHTML += "<span class='_marked'style='background-color:"+ mark_color + "'>" + targetChar + "</span>";
         resultHTML += lineText.slice(col, lineText.length);
@@ -182,24 +182,24 @@ function mark(){
 	var editorArea = {};
 	var targetPosition = {};
 	var marked = document.getElementsByClassName('_marked');
-    
+
     /* unmark previous marked bracket */
     var i = marked.length;
     while(i){
         marked[i-1].outerHTML = marked[i-1].innerHTML;
         i--;
     }
-    
+
 	if(!mark_flag) return 0;
-    
+
 	editorArea = new EditorBoard();
-    
+
     /* mark current bracket */
     currentPosition  = editorArea.getCurrentBracket();
     if(!currentPosition) return 0;
     col = editorArea.convertCol(currentPosition.line,currentPosition.col, currentPosition.bracket);
     editorArea.markChar(currentPosition.line, col, currentPosition.bracket);
-    
+
     /* mark matched bracket */
 	targetPosition = editorArea.getTargetPos();
 	if(!targetPosition) return 0;
